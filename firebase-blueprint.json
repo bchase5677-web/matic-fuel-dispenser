@@ -1,0 +1,62 @@
+{
+  "collections": [
+    {
+      "name": "products",
+      "description": "Products available in the store",
+      "fields": [
+        { "name": "name", "type": "string" },
+        { "name": "price", "type": "number" },
+        { "name": "description", "type": "string" },
+        { "name": "label", "type": "string" },
+        { "name": "imageUrl", "type": "string" },
+        { "name": "createdAt", "type": "timestamp" }
+      ]
+    },
+    {
+      "name": "orders",
+      "description": "Customer orders",
+      "fields": [
+        { "name": "customerName", "type": "string" },
+        { "name": "customerEmail", "type": "string" },
+        { "name": "customerPhone", "type": "string" },
+        { "name": "address", "type": "string" },
+        { "name": "items", "type": "array" },
+        { "name": "total", "type": "number" },
+        { "name": "status", "type": "string" },
+        { "name": "createdAt", "type": "timestamp" }
+      ]
+    },
+    {
+      "name": "customers",
+      "description": "Customer details",
+      "fields": [
+        { "name": "name", "type": "string" },
+        { "name": "email", "type": "string" },
+        { "name": "phone", "type": "string" },
+        { "name": "address", "type": "string" },
+        { "name": "totalOrders", "type": "number" },
+        { "name": "totalSpent", "type": "number" },
+        { "name": "createdAt", "type": "timestamp" }
+      ]
+    },
+    {
+      "name": "settings",
+      "description": "Global website settings",
+      "fields": [
+        { "name": "websiteName", "type": "string" },
+        { "name": "contactPhone", "type": "string" },
+        { "name": "whatsappNumber", "type": "string" },
+        { "name": "contactEmail", "type": "string" },
+        { "name": "updatedAt", "type": "timestamp" }
+      ]
+    },
+    {
+      "name": "analytics",
+      "description": "Simple analytics tracking",
+      "fields": [
+        { "name": "visitors", "type": "number" },
+        { "name": "lastVisited", "type": "timestamp" }
+      ]
+    }
+  ]
+}
