@@ -568,6 +568,7 @@ export default function AdminPanel() {
                     <tr>
                       <th className="px-6 py-4">Order ID</th>
                       <th className="px-6 py-4">Customer</th>
+                      <th className="px-6 py-4">Contact & Address</th>
                       <th className="px-6 py-4">Date</th>
                       <th className="px-6 py-4">Status</th>
                       <th className="px-6 py-4">Total</th>
@@ -578,12 +579,26 @@ export default function AdminPanel() {
                     {orders.map(order => (
                       <tr key={order.id} className="hover:bg-white/[0.02] transition-colors">
                         <td className="px-6 py-4 font-mono text-xs">{order.id.substring(0,8)}</td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 font-medium">
                           <button onClick={() => {
                             const newName = prompt('Edit customer name', order.customerName);
                             if (newName !== null) updateDoc(doc(db, 'orders', order.id), { customerName: newName });
-                          }} className="hover:text-white hover:underline text-left">
+                          }} className="hover:text-white hover:underline text-left block">
                             {order.customerName || 'Guest'}
+                          </button>
+                        </td>
+                        <td className="px-6 py-4 text-xs text-gray-400">
+                          <button onClick={() => {
+                            const newPhone = prompt('Edit phone number', order.customerPhone || '');
+                            if (newPhone !== null) updateDoc(doc(db, 'orders', order.id), { customerPhone: newPhone });
+                          }} className="hover:text-white font-mono hover:underline block text-left">
+                            📞 {order.customerPhone || 'Add phone'}
+                          </button>
+                          <button onClick={() => {
+                            const newAddress = prompt('Edit delivery address', order.customerAddress || '');
+                            if (newAddress !== null) updateDoc(doc(db, 'orders', order.id), { customerAddress: newAddress });
+                          }} className="hover:text-white hover:underline block text-left max-w-[180px] truncate text-gray-500" title={order.customerAddress}>
+                            📍 {order.customerAddress || 'Add address'}
                           </button>
                         </td>
                         <td className="px-6 py-4">{new Date(order.createdAt).toLocaleDateString()}</td>
@@ -639,10 +654,18 @@ export default function AdminPanel() {
                         const newName = prompt('Edit customer name', c.name);
                         if (newName !== null) updateDoc(doc(db, 'customers', c.id), { name: newName });
                       }}>{c.name || 'Unknown User'}</div>
-                      <div className="text-gray-500 text-sm mb-2 cursor-pointer hover:underline" onClick={() => {
+                      <div className="text-gray-500 text-xs mt-0.5 cursor-pointer hover:underline" onClick={() => {
                         const newEmail = prompt('Edit email', c.email);
                         if (newEmail !== null) updateDoc(doc(db, 'customers', c.id), { email: newEmail });
                       }}>{c.email || 'No email provided'}</div>
+                      <div className="text-gray-400 text-xs font-mono mt-1 cursor-pointer hover:underline" onClick={() => {
+                        const newPhone = prompt('Edit phone number', c.phone || '');
+                        if (newPhone !== null) updateDoc(doc(db, 'customers', c.id), { phone: newPhone });
+                      }}>📞 {c.phone || 'No phone number'}</div>
+                      <div className="text-gray-500 text-xs mt-1 mb-2.5 cursor-pointer hover:underline max-w-[200px] truncate" title={c.address} onClick={() => {
+                        const newAddress = prompt('Edit address', c.address || '');
+                        if (newAddress !== null) updateDoc(doc(db, 'customers', c.id), { address: newAddress });
+                      }}>📍 {c.address || 'No delivery address'}</div>
                       <div className="text-xs text-gray-400 bg-white/5 px-2 py-1 rounded inline-block cursor-pointer hover:bg-white/10" onClick={() => {
                         const newTotal = prompt('Edit total orders', c.totalOrders);
                         if (newTotal && !isNaN(Number(newTotal))) updateDoc(doc(db, 'customers', c.id), { totalOrders: Number(newTotal) });

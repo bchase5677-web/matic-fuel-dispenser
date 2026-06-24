@@ -9,20 +9,22 @@ export default function CartDrawer() {
   const { cart, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, clearCart } = useCart();
   const { config } = useSiteConfig();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [customerInfo, setCustomerInfo] = useState({ name: '' });
+  const [customerInfo, setCustomerInfo] = useState({ name: '', phone: '', address: '' });
   const [step, setStep] = useState<'cart' | 'checkout' | 'success'>('cart');
 
   const total = cart.reduce((sum, item) => sum + Number(item.price || 0) * item.quantity, 0);
 
   const handleCheckout = async () => {
-    if (!customerInfo.name) {
-      return alert('Please enter your name.');
+    if (!customerInfo.name || !customerInfo.phone || !customerInfo.address) {
+      return alert('Please fill in all contact details (Name, Phone Number, and Address).');
     }
     
     setIsCheckingOut(true);
     try {
       const orderData = {
         customerName: customerInfo.name,
+        customerPhone: customerInfo.phone,
+        customerAddress: customerInfo.address,
         items: cart,
         total: total,
         status: 'Pending',
@@ -34,13 +36,20 @@ export default function CartDrawer() {
       // Also save/update customer
       await addDoc(collection(db, 'customers'), {
         name: customerInfo.name,
+        phone: customerInfo.phone,
+        address: customerInfo.address,
         totalOrders: 1,
         totalSpent: total,
         createdAt: new Date().toISOString()
       });
 
       // Prepare WhatsApp message
-      let msg = `Hello Matic Fueltec, I would like to place an order.\n\n*Customer:* ${customerInfo.name}\n*Order Summary:*\n`;
+      let msg = `Hello Matic Fueltec, I would like to place an order.\n\n` +
+                `*Customer Details:*\n` +
+                `- *Name:* ${customerInfo.name}\n` +
+                `- *Phone:* ${customerInfo.phone}\n` +
+                `- *Address:* ${customerInfo.address}\n\n` +
+                `*Order Summary:*\n`;
       cart.forEach(item => {
         msg += `- ${item.quantity}x ${item.name} (₦${Number(item.price || 0).toLocaleString()})\n`;
       });
@@ -64,7 +73,7 @@ export default function CartDrawer() {
     setIsCartOpen(false);
     setTimeout(() => {
       setStep('cart');
-      setCustomerInfo({ name: '' });
+      setCustomerInfo({ name: '', phone: '', address: '' });
     }, 300);
   };
 
@@ -124,8 +133,40 @@ export default function CartDrawer() {
               ) : step === 'checkout' ? (
                 <div className="space-y-6">
                   <div className="bg-[#141414] p-4 rounded-xl border border-white/5 space-y-4 mb-8">
-                    <h3 className="font-bold text-white border-b border-white/5 pb-2">Contact Information</h3>
-                    <input type="text" placeholder="Full Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} className="w-full bg-[#0F0F0F] border border-white/5 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--color-matic-gold)]" />
+                    <h3 className="font-bold text-white border-b border-white/5 pb-2 text-sm tracking-wider uppercase text-[var(--color-matic-gold)]">Contact Information</h3>
+                    
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Full Name</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. John Doe" 
+                        value={customerInfo.name} 
+                        onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} 
+                        className="w-full bg-[#0F0F0F] border border-white/5 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--color-matic-gold)] text-sm transition-all" 
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Phone Number</label>
+                      <input 
+                        type="tel" 
+                        placeholder="e.g. +234 902 881 3221" 
+                        value={customerInfo.phone} 
+                        onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} 
+                        className="w-full bg-[#0F0F0F] border border-white/5 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--color-matic-gold)] text-sm transition-all" 
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Delivery/Contact Address</label>
+                      <textarea 
+                        rows={3}
+                        placeholder="e.g. 123 Fueltec Avenue, Lagos" 
+                        value={customerInfo.address} 
+                        onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} 
+                        className="w-full bg-[#0F0F0F] border border-white/5 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--color-matic-gold)] text-sm transition-all resize-none" 
+                      />
+                    </div>
                   </div>
                   
                   <div className="bg-[#141414] p-4 rounded-xl border border-white/5">
