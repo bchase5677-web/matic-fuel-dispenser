@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Save, Plus, Trash2, Users, ShoppingBag, Settings, LogOut, Package, Image as ImageIcon, CheckCircle, Clock, Search, X, LayoutDashboard, FileText, Bell, Menu, Fuel } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
@@ -6,6 +6,24 @@ import { useSiteConfig } from '../SiteContext';
 import { db, collection, getDocs, addDoc, updateDoc, doc, deleteDoc, onSnapshot, setDoc, getDoc } from '../firebase';
 
 export default function AdminPanel() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('matic_admin_auth') === 'true';
+  });
+  const [usernameInput, setUsernameInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (usernameInput === 'admin' && passwordInput === 'chasedev') {
+      setIsAuthenticated(true);
+      localStorage.setItem('matic_admin_auth', 'true');
+      setLoginError('');
+    } else {
+      setLoginError('Invalid administrator credentials.');
+    }
+  };
+
   const { config: ctxConfig, refreshConfig } = useSiteConfig();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -147,6 +165,8 @@ export default function AdminPanel() {
   };
 
   const exitAdmin = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('matic_admin_auth');
     window.location.hash = '';
   };
 
@@ -179,6 +199,84 @@ export default function AdminPanel() {
     }
     alert("Seeded!");
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[var(--color-matic-dark)] flex items-center justify-center p-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md bg-[#0F0F0F] border border-white/5 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
+        >
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-matic-gold)] to-yellow-600"></div>
+          
+          <div className="flex justify-center mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-matic-gold)] to-yellow-600 rounded-full flex items-center justify-center font-bold text-black text-xs">
+                <Fuel className="w-5 h-5 text-black" />
+              </div>
+              <div>
+                <div className="text-white font-bold text-xl tracking-widest leading-none uppercase">Matic Fueltec</div>
+                <div className="text-gray-500 text-[10px] tracking-wider uppercase mt-1">Admin Portal</div>
+              </div>
+            </div>
+          </div>
+
+          <h2 className="text-2xl font-bold text-white text-center mb-6">
+            Administrator Sign In
+          </h2>
+
+          {loginError && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm p-3 rounded-lg mb-6 text-center font-medium">
+              {loginError}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1">Username</label>
+              <input 
+                type="text" 
+                value={usernameInput}
+                onChange={(e) => setUsernameInput(e.target.value)}
+                required
+                placeholder="admin" 
+                className="w-full bg-[#141414] border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--color-matic-gold)] transition-all" 
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1">Password</label>
+              <input 
+                type="password" 
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                required
+                placeholder="••••••••" 
+                className="w-full bg-[#141414] border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--color-matic-gold)] transition-all" 
+              />
+            </div>
+
+            <div className="pt-2 flex gap-3">
+              <button 
+                type="button"
+                onClick={() => window.location.hash = ''}
+                className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl transition-all text-center text-sm"
+              >
+                Back to Site
+              </button>
+              <button 
+                type="submit" 
+                className="flex-1 bg-[var(--color-matic-gold)] hover:bg-[var(--color-matic-gold-hover)] text-black font-extrabold py-3 rounded-xl transition-all text-center text-sm"
+              >
+                Access Panel
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] flex font-sans">
