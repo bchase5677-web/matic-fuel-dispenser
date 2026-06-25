@@ -22,9 +22,14 @@ import InstallPwaBanner from './components/InstallPwaBanner';
 import { io } from 'socket.io-client';
 
 export default function App() {
-  const [route, setRoute] = useState(window.location.hash || '#home');
+  const [route, setRoute] = useState('#home');
 
   useEffect(() => {
+    // Force home on initial load
+    if (window.location.hash !== '#home' && window.location.hash !== '') {
+      window.location.hash = '#home';
+    }
+
     const handleHashChange = () => {
       const hash = window.location.hash || '#home';
       setRoute(hash);

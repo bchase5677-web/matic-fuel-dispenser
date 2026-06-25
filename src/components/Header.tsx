@@ -76,7 +76,6 @@ export default function Header() {
             <nav className="flex-1 flex flex-col justify-center px-12 py-8 space-y-8">
               <a href="#home" onClick={() => setIsMenuOpen(false)} className="text-4xl font-bold text-white hover:text-[var(--color-matic-gold)] transition-colors uppercase tracking-widest">Home</a>
               <a href="#products" onClick={() => setIsMenuOpen(false)} className="text-4xl font-bold text-white hover:text-[var(--color-matic-gold)] transition-colors uppercase tracking-widest">Shop</a>
-              <a href="#admin" onClick={() => setIsMenuOpen(false)} className="text-4xl font-bold text-white hover:text-[var(--color-matic-gold)] transition-colors uppercase tracking-widest">Admin</a>
             </nav>
             
             <div className="p-12 border-t border-white/10">
