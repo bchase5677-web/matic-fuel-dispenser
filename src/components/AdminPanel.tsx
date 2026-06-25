@@ -4,6 +4,8 @@ import { Save, Plus, Trash2, Users, ShoppingBag, Settings, LogOut, Package, Imag
 import { io, Socket } from 'socket.io-client';
 import { useSiteConfig } from '../SiteContext';
 import { db, collection, getDocs, addDoc, updateDoc, doc, deleteDoc, onSnapshot, setDoc, getDoc } from '../firebase';
+import defaultHeroImage from '../assets/images/luxury_gas_station_1782231212172.jpg';
+import defaultProductsImage from '../assets/images/luxury_fuel_dispenser_1782231192519.jpg';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -46,13 +48,9 @@ export default function AdminPanel() {
 
   useEffect(() => {
     // Sync with global config initial
-    setConfig({
-      name: ctxConfig?.name || 'Matic FUELTEC Ltd',
-      address: ctxConfig?.address || '',
-      phone: ctxConfig?.phone || '',
-      whatsapp: ctxConfig?.whatsapp || '',
-      email: ctxConfig?.email || ''
-    });
+    if (ctxConfig) {
+      setConfig(prev => ({ ...prev, ...ctxConfig }));
+    }
   }, [ctxConfig]);
 
   useEffect(() => {
@@ -112,6 +110,17 @@ export default function AdminPanel() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setNewProduct(prev => ({ ...prev, imageUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleConfigImageUpload = (e: any, field: string) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setConfig(prev => ({ ...prev, [field]: reader.result as string }));
       };
       reader.readAsDataURL(file);
     }
@@ -757,6 +766,42 @@ export default function AdminPanel() {
                   <div>
                     <label className="block text-sm font-medium text-gray-400 mb-2">Physical Address</label>
                     <textarea rows={3} value={config.address} onChange={e => setConfig({...config, address: e.target.value})} className="w-full bg-[#141414] border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--color-matic-gold)] transition-colors" />
+                  </div>
+                  
+                  <div className="pt-6 border-t border-white/5">
+                    <h3 className="text-lg font-bold text-white mb-4">Website Images</h3>
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">Logo (Overrides text/icon logo)</label>
+                        <div className="border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center relative hover:border-[var(--color-matic-gold)]/50 transition-colors cursor-pointer bg-[#141414] min-h-[100px]">
+                          {config.logoUrl ? (
+                            <img src={config.logoUrl} alt="Logo Preview" className="max-h-16 object-contain" />
+                          ) : (
+                            <div className="flex flex-col items-center gap-2">
+                               <Fuel className="w-8 h-8 text-[var(--color-matic-gold)]" />
+                               <span className="text-sm text-gray-400">Click to upload custom logo</span>
+                            </div>
+                          )}
+                          <input type="file" accept="image/*" onChange={(e) => handleConfigImageUpload(e, 'logoUrl')} className="absolute inset-0 opacity-0 cursor-pointer" />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">Hero Section Image</label>
+                        <div className="border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center relative hover:border-[var(--color-matic-gold)]/50 transition-colors cursor-pointer bg-[#141414] min-h-[150px]">
+                          <img src={config.heroImageUrl || defaultHeroImage} alt="Hero Preview" className="max-h-32 object-contain" />
+                          <input type="file" accept="image/*" onChange={(e) => handleConfigImageUpload(e, 'heroImageUrl')} className="absolute inset-0 opacity-0 cursor-pointer" />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">Products Section Image</label>
+                        <div className="border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center relative hover:border-[var(--color-matic-gold)]/50 transition-colors cursor-pointer bg-[#141414] min-h-[150px]">
+                          <img src={config.productsImageUrl || defaultProductsImage} alt="Products Preview" className="max-h-32 object-contain" />
+                          <input type="file" accept="image/*" onChange={(e) => handleConfigImageUpload(e, 'productsImageUrl')} className="absolute inset-0 opacity-0 cursor-pointer" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

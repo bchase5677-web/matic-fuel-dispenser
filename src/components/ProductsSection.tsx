@@ -1,8 +1,11 @@
 import { motion } from 'motion/react';
 import { ArrowRight, Check } from 'lucide-react';
+import { useSiteConfig } from '../SiteContext';
 import heroImage from '../assets/images/luxury_fuel_dispenser_1782231192519.jpg';
 
 export default function ProductsSection() {
+  const { config } = useSiteConfig();
+  
   return (
     <section id="products" className="py-24 bg-[var(--color-matic-dark)]">
       <div className="container mx-auto px-6">
@@ -22,7 +25,7 @@ export default function ProductsSection() {
         >
           <div className="w-full md:w-1/2 bg-black relative min-h-[400px]">
             <img 
-              src={heroImage} 
+              src={config?.productsImageUrl || heroImage} 
               alt="Matic LFX Series Dispenser" 
               className="absolute inset-0 w-full h-full object-cover"
             />

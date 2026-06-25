@@ -16,13 +16,19 @@ export default function Header() {
       <header className="absolute top-0 left-0 right-0 z-40 bg-transparent">
         <div className="container mx-auto px-6 h-24 flex items-center justify-between">
           <a href="#" className="flex items-center gap-3">
-            <div className="text-[var(--color-matic-gold)]">
-              <Fuel className="w-8 h-8 md:w-10 md:h-10" />
-            </div>
-            <div>
-              <div className="text-white font-bold text-xl md:text-2xl tracking-widest leading-none uppercase">{config?.name || 'Matic Fueltec'}</div>
-              <div className="text-[var(--color-matic-gold)] text-[10px] md:text-xs uppercase font-medium tracking-[0.3em] mt-1">Fueling Excellence</div>
-            </div>
+            {config?.logoUrl ? (
+              <img src={config.logoUrl} alt={config?.name || 'Matic Fueltec'} className="h-12 md:h-16 object-contain" />
+            ) : (
+              <>
+                <div className="text-[var(--color-matic-gold)]">
+                  <Fuel className="w-8 h-8 md:w-10 md:h-10" />
+                </div>
+                <div>
+                  <div className="text-white font-bold text-xl md:text-2xl tracking-widest leading-none uppercase">{config?.name || 'Matic Fueltec'}</div>
+                  <div className="text-[var(--color-matic-gold)] text-[10px] md:text-xs uppercase font-medium tracking-[0.3em] mt-1">Fueling Excellence</div>
+                </div>
+              </>
+            )}
           </a>
 
           <div className="flex items-center gap-6">
@@ -58,12 +64,18 @@ export default function Header() {
           >
             <div className="container mx-auto px-6 h-24 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="text-[var(--color-matic-gold)]">
-                  <Fuel className="w-8 h-8 md:w-10 md:h-10" />
-                </div>
-                <div>
-                  <div className="text-white font-bold text-xl md:text-2xl tracking-widest leading-none uppercase">{config?.name || 'Matic Fueltec'}</div>
-                </div>
+                {config?.logoUrl ? (
+                  <img src={config.logoUrl} alt={config?.name || 'Matic Fueltec'} className="h-10 md:h-12 object-contain" />
+                ) : (
+                  <>
+                    <div className="text-[var(--color-matic-gold)]">
+                      <Fuel className="w-8 h-8 md:w-10 md:h-10" />
+                    </div>
+                    <div>
+                      <div className="text-white font-bold text-xl md:text-2xl tracking-widest leading-none uppercase">{config?.name || 'Matic Fueltec'}</div>
+                    </div>
+                  </>
+                )}
               </div>
               <button 
                 onClick={() => setIsMenuOpen(false)}

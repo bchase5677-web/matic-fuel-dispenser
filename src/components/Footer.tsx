@@ -35,13 +35,19 @@ export default function Footer() {
         {/* Logo and About */}
         <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-16">
           <a href="#" className="flex items-center gap-3 mb-6">
-            <div className="text-[var(--color-matic-gold)]">
-              <Fuel className="w-10 h-10" />
-            </div>
-            <div className="text-left">
-              <div className="text-white font-bold text-2xl tracking-widest leading-none uppercase">{config?.name || 'Matic Fueltec'}</div>
-              <div className="text-[var(--color-matic-gold)] text-xs uppercase font-medium tracking-[0.3em] mt-1">Fueling Excellence</div>
-            </div>
+            {config?.logoUrl ? (
+              <img src={config.logoUrl} alt={config?.name || 'Matic Fueltec'} className="h-12 object-contain" />
+            ) : (
+              <>
+                <div className="text-[var(--color-matic-gold)]">
+                  <Fuel className="w-10 h-10" />
+                </div>
+                <div className="text-left">
+                  <div className="text-white font-bold text-2xl tracking-widest leading-none uppercase">{config?.name || 'Matic Fueltec'}</div>
+                  <div className="text-[var(--color-matic-gold)] text-xs uppercase font-medium tracking-[0.3em] mt-1">Fueling Excellence</div>
+                </div>
+              </>
+            )}
           </a>
           <p className="text-gray-400 font-light mb-8">
             Premium fuel dispensers designed for performance, reliability and luxury.

@@ -92,8 +92,8 @@ export default function HeroSection() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, ease: "easeOut" }}
             >
-              <img 
-                src={heroImage} 
+                <img 
+                src={config?.heroImageUrl || heroImage} 
                 alt="Luxury Fuel Dispenser" 
                 className="w-full h-full object-cover"
               />
