@@ -93,15 +93,27 @@ export default function AdminPanel() {
   }, []);
 
   const saveConfig = async () => {
-    await setDoc(doc(db, 'settings', 'global'), config, { merge: true });
-    // Also update server for SSR/initial load fallback
-    await fetch('/api/config', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(config)
-    });
-    refreshConfig();
-    alert('Settings saved successfully!');
+    try {
+      const configToSave = { ...config };
+      // Remove any undefined values which Firestore rejects
+      Object.keys(configToSave).forEach(key => {
+        if ((configToSave as any)[key] === undefined) {
+          delete (configToSave as any)[key];
+        }
+      });
+      await setDoc(doc(db, 'settings', 'global'), configToSave, { merge: true });
+      // Also update server for SSR/initial load fallback
+      await fetch('/api/config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(configToSave)
+      });
+      refreshConfig();
+      alert('Settings saved successfully!');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      alert('Failed to save settings. If images are too large, please try smaller ones.');
+    }
   };
 
   const handleImageUpload = (e: any) => {
@@ -109,7 +121,32 @@ export default function AdminPanel() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setNewProduct(prev => ({ ...prev, imageUrl: reader.result as string }));
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          setNewProduct(prev => ({ ...prev, imageUrl: canvas.toDataURL('image/jpeg', 0.7) }));
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -120,7 +157,32 @@ export default function AdminPanel() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setConfig(prev => ({ ...prev, [field]: reader.result as string }));
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          setConfig(prev => ({ ...prev, [field]: canvas.toDataURL('image/jpeg', 0.7) }));
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -129,22 +191,29 @@ export default function AdminPanel() {
   const saveProduct = async () => {
     if (!newProduct.name || !newProduct.price) return alert("Name and price are required");
     
-    if (editingProductId) {
-      await updateDoc(doc(db, 'products', editingProductId), {
-        ...newProduct,
-        price: Number(newProduct.price),
-      });
-    } else {
-      await addDoc(collection(db, 'products'), {
-        ...newProduct,
-        price: Number(newProduct.price),
-        createdAt: new Date().toISOString()
-      });
+    try {
+      if (editingProductId) {
+        await updateDoc(doc(db, 'products', editingProductId), {
+          ...newProduct,
+          price: Number(newProduct.price),
+        });
+        alert('Product updated successfully!');
+      } else {
+        await addDoc(collection(db, 'products'), {
+          ...newProduct,
+          price: Number(newProduct.price),
+          createdAt: new Date().toISOString()
+        });
+        alert('Product added successfully!');
+      }
+      
+      setNewProduct({ name: '', price: '', description: '', label: '', imageUrl: '', category: 'Dispensers', note: '' });
+      setEditingProductId(null);
+      setShowAddProduct(false);
+    } catch (error) {
+      console.error('Error saving product:', error);
+      alert('Failed to save product. If the image is too large, try a smaller one.');
     }
-    
-    setNewProduct({ name: '', price: '', description: '', label: '', imageUrl: '', category: 'Dispensers', note: '' });
-    setEditingProductId(null);
-    setShowAddProduct(false);
   };
 
   const openEditProduct = (p: any) => {
