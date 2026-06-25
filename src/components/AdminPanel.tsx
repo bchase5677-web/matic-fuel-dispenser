@@ -29,7 +29,11 @@ export default function AdminPanel() {
   const { config: ctxConfig, refreshConfig } = useSiteConfig();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [config, setConfig] = useState({
+  const [isSavingConfig, setIsSavingConfig] = useState(false);
+  const [config, setConfig] = useState<{
+    name: string; address: string; phone: string; whatsapp: string; email: string;
+    logoUrl?: string; heroImageUrl?: string; productsImageUrl?: string;
+  }>({
     name: 'Matic FUELTEC Ltd', address: '', phone: '', whatsapp: '', email: ''
   });
   const [products, setProducts] = useState<any[]>([]);
@@ -93,6 +97,7 @@ export default function AdminPanel() {
   }, []);
 
   const saveConfig = async () => {
+    setIsSavingConfig(true);
     try {
       const configToSave = { ...config };
       // Remove any undefined values which Firestore rejects
@@ -113,6 +118,8 @@ export default function AdminPanel() {
     } catch (error) {
       console.error('Error saving settings:', error);
       alert('Failed to save settings. If images are too large, please try smaller ones.');
+    } finally {
+      setIsSavingConfig(false);
     }
   };
 
@@ -881,8 +888,8 @@ export default function AdminPanel() {
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
-                  <button onClick={saveConfig} className="bg-[var(--color-matic-gold)] text-black px-8 py-3 font-bold rounded-xl flex items-center gap-2 hover:opacity-90 transition-opacity">
-                    <Save className="w-5 h-5" /> Save Configuration
+                  <button onClick={saveConfig} disabled={isSavingConfig} className="bg-[var(--color-matic-gold)] text-black px-8 py-3 font-bold rounded-xl flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50 relative z-10 cursor-pointer">
+                    <Save className="w-5 h-5" /> {isSavingConfig ? 'Saving...' : 'Save Configuration'}
                   </button>
                 </div>
               </div>
