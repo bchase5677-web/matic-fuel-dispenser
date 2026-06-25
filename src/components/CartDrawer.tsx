@@ -56,8 +56,12 @@ export default function CartDrawer() {
       msg += `\n*Total:* ₦${total.toLocaleString()}`;
 
       const whatsappNumber = config?.whatsapp?.replace(/[^0-9]/g, '') || '09028813221';
-      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
-      window.open(whatsappUrl, '_blank');
+      // Use direct app protocol to avoid opening the web browser first
+      const whatsappUrl = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(msg)}`;
+      
+      // We assign it to window.location.href to launch the app directly, 
+      // but wrap in a try-catch and provide a fallback if desired (though window.location usually works best for custom protocols)
+      window.location.href = whatsappUrl;
 
       clearCart();
       setStep('success');

@@ -48,7 +48,7 @@ export default function HeroSection() {
                   <ArrowRight className="w-5 h-5" />
                 </a>
                 <a 
-                  href={`https://wa.me/${config?.whatsapp?.replace(/[^0-9]/g, '') || ''}?text=Hello,%20I%20am%20reaching%20out%20to%20request%20a%20repair%20service%20for%20my%20fuel%20dispenser.%20Please%20let%20me%20know%20the%20next%20steps.`} 
+                  href={`whatsapp://send?phone=${config?.whatsapp?.replace(/[^0-9]/g, '') || ''}&text=Hello,%20I%20am%20reaching%20out%20to%20request%20a%20repair%20service%20for%20my%20fuel%20dispenser.%20Please%20let%20me%20know%20the%20next%20steps.`} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="inline-flex items-center justify-center gap-3 bg-white/10 border border-white/20 text-white px-8 py-4 font-bold tracking-wide hover:bg-white/20 transition-colors"
