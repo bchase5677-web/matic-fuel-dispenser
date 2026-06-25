@@ -26,7 +26,11 @@ export default function Login() {
         window.location.hash = '#shop';
       }
     } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please try again.');
+      if (err.code === 'auth/operation-not-allowed') {
+        setError('Email/Password login is not enabled in Firebase. Please go to your Firebase Console -> Authentication -> Sign-in method, and enable "Email/Password".');
+      } else {
+        setError(err.message || 'Authentication failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

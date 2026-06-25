@@ -18,6 +18,7 @@ import MobileNav from './components/MobileNav';
 import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 import CartDrawer from './components/CartDrawer';
+import InstallPwaBanner from './components/InstallPwaBanner';
 import { io } from 'socket.io-client';
 
 export default function App() {
@@ -80,6 +81,7 @@ export default function App() {
 
   return (
     <div className="font-sans antialiased text-white bg-[var(--color-matic-dark)] min-h-screen selection:bg-[var(--color-matic-gold)]/30 selection:text-[var(--color-matic-gold)]" id="home">
+      <InstallPwaBanner />
       <Header />
       <main>
         {route === '#shop' ? (
