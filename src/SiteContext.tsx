@@ -10,6 +10,7 @@ interface SiteConfig {
   logoUrl?: string;
   heroImageUrl?: string;
   productsImageUrl?: string;
+  projectsImageUrl?: string;
 }
 
 interface SiteContextType {

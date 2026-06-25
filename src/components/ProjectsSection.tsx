@@ -1,8 +1,11 @@
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
+import { useSiteConfig } from '../SiteContext';
 import projectImage from '../assets/images/luxury_gas_station_1782231212172.jpg';
 
 export default function ProjectsSection() {
+  const { config } = useSiteConfig();
+
   return (
     <section className="py-24 bg-[var(--color-matic-dark)] border-t border-gray-900">
       <div className="container mx-auto px-6">
@@ -24,7 +27,7 @@ export default function ProjectsSection() {
             transition={{ duration: 0.8 }}
           >
             <img 
-              src={projectImage} 
+              src={config?.projectsImageUrl || projectImage} 
               alt="Luxury Gas Station Canopy at Night" 
               className="w-full h-auto object-cover max-h-[500px]"
             />

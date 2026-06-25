@@ -4,8 +4,9 @@ import { Save, Plus, Trash2, Users, ShoppingBag, Settings, LogOut, Package, Imag
 import { io, Socket } from 'socket.io-client';
 import { useSiteConfig } from '../SiteContext';
 import { db, collection, getDocs, addDoc, updateDoc, doc, deleteDoc, onSnapshot, setDoc, getDoc } from '../firebase';
-import defaultHeroImage from '../assets/images/luxury_gas_station_1782231212172.jpg';
+import defaultHeroImage from '../assets/images/luxury_fuel_dispenser_1782231192519.jpg';
 import defaultProductsImage from '../assets/images/luxury_fuel_dispenser_1782231192519.jpg';
+import defaultProjectsImage from '../assets/images/luxury_gas_station_1782231212172.jpg';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -32,7 +33,7 @@ export default function AdminPanel() {
   const [isSavingConfig, setIsSavingConfig] = useState(false);
   const [config, setConfig] = useState<{
     name: string; address: string; phone: string; whatsapp: string; email: string;
-    logoUrl?: string; heroImageUrl?: string; productsImageUrl?: string;
+    logoUrl?: string; heroImageUrl?: string; productsImageUrl?: string; projectsImageUrl?: string;
   }>({
     name: 'Matic FUELTEC Ltd', address: '', phone: '', whatsapp: '', email: ''
   });
@@ -881,6 +882,14 @@ export default function AdminPanel() {
                         <div className="border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center relative hover:border-[var(--color-matic-gold)]/50 transition-colors cursor-pointer bg-[#141414] min-h-[150px]">
                           <img src={config.productsImageUrl || defaultProductsImage} alt="Products Preview" className="max-h-32 object-contain" />
                           <input type="file" accept="image/*" onChange={(e) => handleConfigImageUpload(e, 'productsImageUrl')} className="absolute inset-0 opacity-0 cursor-pointer" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">Projects Section Image</label>
+                        <div className="border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center relative hover:border-[var(--color-matic-gold)]/50 transition-colors cursor-pointer bg-[#141414] min-h-[150px]">
+                          <img src={config.projectsImageUrl || defaultProjectsImage} alt="Projects Preview" className="max-h-32 object-contain" />
+                          <input type="file" accept="image/*" onChange={(e) => handleConfigImageUpload(e, 'projectsImageUrl')} className="absolute inset-0 opacity-0 cursor-pointer" />
                         </div>
                       </div>
                     </div>
